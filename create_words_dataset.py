@@ -3,9 +3,7 @@ import pickle
 
 import mediapipe as mp
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
-
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -13,21 +11,21 @@ mp_drawing_styles = mp.solutions.drawing_styles
 
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
-DATA_DIR = './data'
+DATA_DIR = './words_data'
 
 data = []
 labels = []
-for dir_ in os.listdir(DATA_DIR):
-    if not os.path.isdir(os.path.join(DATA_DIR, dir_)):
+for word_dir in os.listdir(DATA_DIR):
+    if not os.path.isdir(os.path.join(DATA_DIR, word_dir)):
         continue
         
-    for img_path in os.listdir(os.path.join(DATA_DIR, dir_)):
+    for img_path in os.listdir(os.path.join(DATA_DIR, word_dir)):
         data_aux = []
 
         x_ = []
         y_ = []
 
-        img = cv2.imread(os.path.join(DATA_DIR, dir_, img_path))
+        img = cv2.imread(os.path.join(DATA_DIR, word_dir, img_path))
         if img is None:
             continue
             
@@ -56,16 +54,17 @@ for dir_ in os.listdir(DATA_DIR):
 
             if len(data_aux) == 42:  # 21 landmarks * 2 coordinates
                 data.append(data_aux)
-                labels.append(int(dir_))
+                labels.append(word_dir)
 
 # Convert to numpy arrays for consistent shape
 data = np.array(data, dtype=np.float32)
-labels = np.array(labels, dtype=np.int32)
+labels = np.array(labels)
 
-f = open('data.pickle', 'wb')
+f = open('words_data.pickle', 'wb')
 pickle.dump({'data': data, 'labels': labels}, f)
 f.close()
 
 print(f"Dataset created with {len(data)} samples")
 print(f"Data shape: {data.shape}")
 print(f"Labels shape: {labels.shape}")
+print(f"Unique words: {np.unique(labels)}") 

@@ -1,0 +1,40 @@
+# Virtual Environment
+venv/
+venv311/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Model files and data
+*.p
+*.pickle
+*.pth
+*.h5
+*.model
+
+# Images and media
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.mp4
+*.avi
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db 
