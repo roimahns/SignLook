@@ -1,85 +1,76 @@
-import pickle
-
 import cv2
-import mediapipe as mp
+import pickle
 import numpy as np
+import mediapipe as mp
 
+# Initialize MediaPipe Hand model
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.3)
+mp_draw = mp.solutions.drawing_utils
+
+# Load the model
 model_dict = pickle.load(open('./model.p', 'rb'))
 model = model_dict['model']
 
 cap = cv2.VideoCapture(0)
 
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
-
-# Create a dictionary mapping class numbers to letters (0=A, 1=B, ..., 25=Z)
-labels_dict = {i: chr(65 + i) for i in range(26)}
-
 while True:
-
-    data_aux = []
-    x_ = []
-    y_ = []
-
     ret, frame = cap.read()
-
+    if not ret:
+        break
+        
     H, W, _ = frame.shape
-
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
+    
     results = hands.process(frame_rgb)
-    if results.multi_hand_landmarks and len(results.multi_hand_landmarks) == 1:  # Only process if exactly one hand is detected
-        hand_landmarks = results.multi_hand_landmarks[0]  # Take the first hand
-        
-        # First pass to get normalization values
-        for i in range(len(hand_landmarks.landmark)):
-            x = hand_landmarks.landmark[i].x
-            y = hand_landmarks.landmark[i].y
-            x_.append(x)
-            y_.append(y)
-        
-        # Second pass to get normalized coordinates
-        min_x = min(x_)
-        min_y = min(y_)
-        
-        for i in range(len(hand_landmarks.landmark)):
-            x = hand_landmarks.landmark[i].x
-            y = hand_landmarks.landmark[i].y
-            data_aux.append(x - min_x)
-            data_aux.append(y - min_y)
-
-        if len(data_aux) == 42:  # 21 landmarks * 2 coordinates
-            # Draw the hand landmarks
-            mp_drawing.draw_landmarks(
-                frame,  # image to draw
-                hand_landmarks,  # model output
-                mp_hands.HAND_CONNECTIONS,  # hand connections
-                mp_drawing_styles.get_default_hand_landmarks_style(),
-                mp_drawing_styles.get_default_hand_connections_style())
-
-            # Get bounding box coordinates
-            x1 = int(min(x_) * W) - 10
-            y1 = int(min(y_) * H) - 10
-            x2 = int(max(x_) * W) - 10
-            y2 = int(max(y_) * H) - 10
-
+    if results.multi_hand_landmarks:
+        for hand_landmarks in results.multi_hand_landmarks:
+            mp_draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+            
+            data_aux = []
+            x_ = []
+            y_ = []
+            
+            for landmark in hand_landmarks.landmark:
+                x = landmark.x
+                y = landmark.y
+                x_.append(x)
+                y_.append(y)
+                
+            for landmark in hand_landmarks.landmark:
+                x = landmark.x
+                y = landmark.y
+                data_aux.extend([x, y])
+                
+            # Normalize coordinates
+            x1 = min(x_)
+            x2 = max(x_)
+            y1 = min(y_)
+            y2 = max(y_)
+            
+            for i in range(0, len(data_aux), 2):
+                data_aux[i] = (data_aux[i] - x1) / (x2 - x1)
+                data_aux[i + 1] = (data_aux[i + 1] - y1) / (y2 - y1)
+            
             # Make prediction
             prediction = model.predict([np.asarray(data_aux)])
-            predicted_character = labels_dict[int(prediction[0])]
-
-            # Draw rectangle and label
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
-            cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3,
-                        cv2.LINE_AA)
-
-    cv2.imshow('frame', frame)
-    key = cv2.waitKey(1)
+            predicted_character = prediction[0]
+            
+            # Get prediction probabilities
+            proba = model.predict_proba([np.asarray(data_aux)])
+            confidence = proba[0][model.classes_.tolist().index(predicted_character)]
+            
+            # Draw prediction and confidence
+            x1 = int(min(x_) * W) - 10
+            y1 = int(min(y_) * H) - 10
+            
+            cv2.putText(frame, predicted_character, (x1, y1 - 30), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
+            cv2.putText(frame, f"{confidence:.2%}", (x1, y1 - 10),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
     
-    # Press 'q' to quit
-    if key == ord('q'):
+    cv2.imshow('frame', frame)
+    if cv2.waitKey(1) & 0xFF == 27:  # Press ESC to exit
         break
 
 cap.release()

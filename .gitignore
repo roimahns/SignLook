@@ -1,5 +1,5 @@
 # Virtual Environment
-venv/
+.venv/
 venv311/
 env/
 ENV/
@@ -37,4 +37,18 @@ build/
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Large files
+model.p
+words_model.p
+*.dll
+data.pickle
+words_data.pickle
+
+# Directories
+saved_phrases/
+static/
+templates/
+data/
+words_data/ 

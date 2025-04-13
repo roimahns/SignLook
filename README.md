@@ -1,57 +1,62 @@
-# SignLook - ASL Sign Language Detector
+# Sign Language Recognition Web App
 
-A Python-based application that uses computer vision to detect and recognize American Sign Language (ASL) signs in real-time. This project supports both alphabet signs and common words/phrases.
+A web-based application for real-time sign language recognition using your computer's camera.
 
 ## Features
 
-- Real-time hand detection and tracking
-- ASL alphabet recognition
-- Common words/phrases recognition
-- Easy-to-use interface with webcam support
-- High accuracy using machine learning models
+- Real-time hand gesture recognition
+- Manual letter confirmation with Enter key
+- Prediction stabilization for more reliable detection
+- Save and view your typed phrases
+- Modern, user-friendly interface
 
-## Installation
+## Setup
 
-1. Clone the repository:
-```bash
-git clone https://github.com/roimahns/SignLook.git
-cd SignLook
-```
+1. Install Python 3.8 or higher
+2. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Make sure you have the following files in your project directory:
+   - `model.p` (trained model)
+   - `scaler.p` (fitted StandardScaler)
+   - `app.py` (Flask application)
+   - `templates/index.html` (HTML template)
+   - `static/app.js` (JavaScript code)
 
-2. Create a virtual environment (Python 3.11 recommended):
-```bash
-python -m venv venv311
-.\venv311\Scripts\activate  # Windows
-source venv311/bin/activate  # Linux/Mac
-```
+## Running the Application
 
-3. Install dependencies:
-```bash
-pip install opencv-python mediapipe numpy scikit-learn matplotlib seaborn
-```
+1. Start the Flask server:
+   ```
+   python app.py
+   ```
+2. Open your web browser and navigate to:
+   ```
+   http://localhost:5000
+   ```
 
 ## Usage
 
-### Alphabet Recognition
-```bash
-python collect_imgs.py  # Collect training data
-python create_dataset.py  # Process the collected images
-python train_classifier.py  # Train the model
-python inference_classifier.py  # Run real-time recognition
-```
+1. Allow camera access when prompted
+2. Show your hand to the camera
+3. Hold your hand steady until the prediction stabilizes
+4. Press Enter to add the detected letter to your phrase
+5. Use the controls to:
+   - Add letters (Enter)
+   - Delete characters (Backspace)
+   - Add spaces (Space)
+   - Save phrases (Save)
 
-### Word Recognition
-```bash
-python collect_words.py  # Collect word training data
-python create_words_dataset.py  # Process the word images
-python train_words_classifier.py  # Train the word model
-python inference_words_classifier.py  # Run real-time word recognition
-```
+## Controls
 
-## Contributing
+- **Enter**: Add the current letter to your phrase
+- **Backspace**: Delete the last character
+- **Space**: Add a space to your phrase
+- **Save**: Save the current phrase
 
-Feel free to open issues or submit pull requests if you have suggestions for improvements.
+## Notes
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- Make sure you have good lighting for better hand detection
+- Keep your hand within the camera frame
+- Hold your hand steady for more accurate predictions
+- The system requires a prediction to be stable (appear multiple times) before accepting it
