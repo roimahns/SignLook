@@ -1,14 +1,35 @@
-# Sign Language Recognition Web App
+# SignLook - Real-Time Sign Language Recognition
 
-A web-based application for real-time sign language recognition using your computer's camera.
+A web-based application that converts hand gestures into text in real-time using your computer's camera. Built with Python, OpenCV, and MediaPipe for accurate hand gesture recognition.
+
+## Inspiration
+
+When my best friend recently lost his hearing, I found myself struggling to communicate effectively. This personal challenge inspired me to create SignLook - a tool that bridges the communication gap while I learned sign language myself. The project was built entirely solo during a hackathon, even overcoming challenges like a blackout that had me chasing Wi-Fi signals between libraries and cafés!
 
 ## Features
 
-- Real-time hand gesture recognition
+- Real-time hand gesture recognition with 91% accuracy
 - Manual letter confirmation with Enter key
-- Prediction stabilization for more reliable detection
+- Prediction stabilization for reliable detection
 - Save and view your typed phrases
 - Modern, user-friendly interface
+- Works with standard webcam
+- No installation required - runs in your browser
+
+## Technologies Used
+
+- **Backend:**
+  - Python 3.8+
+  - Flask (Web framework)
+  - OpenCV (Computer Vision)
+  - MediaPipe (Hand Tracking)
+  - Scikit-learn (Machine Learning)
+  - NumPy (Data Processing)
+
+- **Frontend:**
+  - HTML5
+  - JavaScript
+  - CSS3
 
 ## Setup
 
@@ -60,3 +81,19 @@ A web-based application for real-time sign language recognition using your compu
 - Keep your hand within the camera frame
 - Hold your hand steady for more accurate predictions
 - The system requires a prediction to be stable (appear multiple times) before accepting it
+
+## Future Improvements
+
+- Adding support for full words and phrases
+- Improving accuracy in different lighting conditions
+- Creating a mobile app version
+- Adding a learning mode for beginners
+- Supporting multiple sign language dialects
+
+## Contributing
+
+Feel free to contribute to this project! Whether you're learning sign language, know someone who's hearing impaired, or just interested in the technology, I hope SignLook can make a difference in your life too.
+
+## License
+
+This project is open source and available under the MIT License.
