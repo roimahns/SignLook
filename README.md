@@ -20,7 +20,6 @@ When my best friend recently lost his hearing, I found myself struggling to comm
 
 - **Backend:**
   - Python 3.8+
-  - Flask (Web framework)
   - OpenCV (Computer Vision)
   - MediaPipe (Hand Tracking)
   - Scikit-learn (Machine Learning)
@@ -41,19 +40,14 @@ When my best friend recently lost his hearing, I found myself struggling to comm
 3. Make sure you have the following files in your project directory:
    - `model.p` (trained model)
    - `scaler.p` (fitted StandardScaler)
-   - `app.py` (Flask application)
-   - `templates/index.html` (HTML template)
-   - `static/app.js` (JavaScript code)
+   - `sign_language_typer.py` (main application)
+   - `inference_classifier.py` (inference engine)
 
 ## Running the Application
 
-1. Start the Flask server:
+1. Run the main application:
    ```
-   python app.py
-   ```
-2. Open your web browser and navigate to:
-   ```
-   http://localhost:5000
+   python sign_language_typer.py
    ```
 
 ## Usage
